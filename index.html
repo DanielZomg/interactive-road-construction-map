@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive Map</title>
+    <style>
+        /* CSS styles for the grid and results display */
+        #grid {
+            display: grid;
+            grid-template-columns: repeat(24, minmax(50px, 1fr)); /* Minimum 50px wide, expandable */
+            grid-template-rows: repeat(9, minmax(50px, 1fr)); /* Minimum 50px tall, expandable */
+            grid-auto-flow: row;
+        }
+
+        .start-tile {
+            background-color: #eee; /* I might want to choose another colour... */
+            cursor: default;        /* Change the cursor to indicate it's not clickable */
+        }
+
+        .tile {
+            aspect-ratio: 1 / 1;
+            border: 1px solid black;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .selected {
+            background-color: lightblue;
+        }
+    </style>
+</head>
+<body>
+    <div id="map">
+        <div id="grid"></div>
+    </div>
+    <div id="results"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
