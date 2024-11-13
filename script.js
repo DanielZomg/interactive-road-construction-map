@@ -1,4 +1,21 @@
-// 1. Assign values and attributes to each tile:
+let isPlacingCity = false; // Track whether we're in city placement mode
+
+
+// Toggle city placement on/off
+
+function addModeToggle() {
+    const toggleButton = document.createElement('button');
+    toggleButton.textContent = 'Switch to city placement mode';
+    toggleButton.onclick = () => {
+        isPlacingCity = !isPlacingCity;
+        toggleButton.textContent = isPlacingCity ?
+            'Exit city placement mode' :
+            'Switch to city placement mode';
+    };
+    document.body.insertBefore(toggleButton, map);
+}
+
+// Assign values and attributes to each tile:
 
 function generateTiles(rows, cols) {
   const tiles = [];
@@ -61,12 +78,13 @@ const numRows = 9;      // Number of rows
 const numCols = 24;     // Number of columns (from A to X, hence 24)
 const tiles = generateTiles(numRows, numCols);
 
-// 2. Create the grid dynamically:
+// Create the grid dynamically:
 
 const map = document.getElementById('map');
 const results = document.getElementById('results');
 
 function createGrid() {
+    addModeToggle();
     const gridContainer = document.getElementById('grid'); // Get the grid container
 
     for (let tile of tiles) {
@@ -90,25 +108,50 @@ function createGrid() {
     }
 }
 
-// 3. Handle tile selection:
+// Handle tile selection:
 
 function handleTileClick(tileElement) {
-    tileElement.classList.toggle('selected');
+    const tileId = tileElement.id;
+
+    // Don't allow clicking the start tile
+    if (tileId === "A5") return;
+
+    // Don't allow clicking if the tile is already a city
+    if (tileElement.classList.contains('city')) return;
+
+    if (isPlacingCity) {
+        // Remove any existing selection if present
+        tileElement.classList.remove('selected');
+        // Toggle city status
+        tileElement.classList.toggle('city');
+        if (tileElement.classList.contains('city')) {
+            tileElement.textContent = '🏰'; // Isn't it nice? :-)
+        } else {
+            tileElement.textContent = tileId; // Restore original coordinate text
+        }
+    } else {
+        // Only allow selection if not a city
+        if (!tileElement.classList.contains('city')) {
+            tileElement.classList.toggle('selected');
+        }
+    }
     calculateTotals();
 }
 
-// 4. Calculate totals:
+// Calculate totals:
 
 function calculateTotals() {
     let totals = { Intelligence: 0, Leadership: 0, Strength: 0, Charisma: 0 };
     const selectedTiles = document.querySelectorAll('.selected');
 
     selectedTiles.forEach(tileElement => {
+        // Skip if the tile is a city
+        if (tileElement.classList.contains('city')) return;
+
         const tileId = tileElement.id;
         const tileData = tiles.find(tile => tile.coord === tileId);
 
-        // Only include tiles with attributes in the calculation
-        if (tileData && tileData.attribute) {  // Check if the attribute exists (only relevant for the Start tile...)
+        if (tileData && tileData.attribute) {
             totals[tileData.attribute] += tileData.value;
         }
     });
@@ -116,7 +159,7 @@ function calculateTotals() {
     displayResults(totals);
 }
 
-// 5. Display results:
+// Display results:
 
 function displayResults(totals) {
     results.innerHTML = ''; // Clear previous results
