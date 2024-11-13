@@ -22,6 +22,11 @@ function generateTiles(rows, cols) {
   const columnValues = [1, 1.6, 2.3, 3, 6, 9, 12, 15, 20, 25, 30, 35, 46, 57, 69, 82, 112, 140, 175, 207, 260, 320, 380, 440];
 
   // Define the coordinates for each attribute
+  const charismaCoords = [ "A8", "B2", "B5", "B9", "C4", "D1", "D7", "D9", "E1", "E2", "E6", "F2",
+                          "F3", "G7", "H3", "H6", "H9", "I2", "I9", "J2", "J4", "J7", "K6", "L1",
+                          "L5", "L9", "M2", "M8", "N6", "N9", "O5", "O8", "P1", "P6", "P9", "Q5",
+                          "Q7", "R1", "R3", "R7", "S1", "S6", "T4", "T5", "U4", "V2", "V4", "V6",
+                          "W4", "W5", "W8", "W9", "X4"];
   const intelligenceCoords = ["A1", "A4", "A9", "B3", "B6", "C3", "C5", "C8", "D3", "D6", "E3", "E9", 
                               "F5", "F8", "G3", "G4", "G8", "H1", "H7", "I5", "I7", "J5", "J8", "K3", 
                               "K4", "K8", "L2", "L7", "M5", "M6", "N1", "N3", "N7", "O3", "O6", "P4", 
@@ -37,12 +42,7 @@ function generateTiles(rows, cols) {
                           "K9", "L3", "L8", "M1", "M4", "M7", "N2", "N5", "O1", "O4", "P2", "P5",
                           "Q1", "Q2", "Q6", "R6", "S7", "S9", "T3", "T8", "T9", "U2", "U5", "V1",
                           "V3", "W1", "W3", "W6", "X2", "X5"];
-  const charismaCoords = [ "A8", "B2", "B5", "B9", "C4", "D1", "D7", "D9", "E1", "E2", "E6", "F2",
-                          "F3", "G7", "H3", "H6", "H9", "I2", "I9", "J2", "J4", "J7", "K6", "L1",
-                          "L5", "L9", "M2", "M8", "N6", "N9", "O5", "O8", "P1", "P6", "P9", "Q5",
-                          "Q7", "R1", "R3", "R7", "S1", "S6", "T4", "T5", "U4", "V2", "V4", "V6",
-                          "W4", "W5", "W8", "W9", "X4"];
-
+  
 
 
   for (let row = 1; row <= rows; row++) {
@@ -58,14 +58,14 @@ function generateTiles(rows, cols) {
 
           let attribute = null; // Default - no attribute
 
-          if (intelligenceCoords.includes(coord)) {
+          if (charismaCoords.includes(coord)) {
+              attribute = "Charisma";
+          } else if (intelligenceCoords.includes(coord)) {
               attribute = "Intelligence";
           } else if (leadershipCoords.includes(coord)) {
               attribute = "Leadership";
           } else if (strengthCoords.includes(coord)) {
               attribute = "Strength";
-          } else if (charismaCoords.includes(coord)) {
-              attribute = "Charisma";
           }
 
           tiles.push({ coord, value, attribute });
@@ -141,7 +141,7 @@ function handleTileClick(tileElement) {
 // Calculate totals:
 
 function calculateTotals() {
-    let totals = { Intelligence: 0, Leadership: 0, Strength: 0, Charisma: 0 };
+    let totals = { Charisma: 0, Intelligence: 0, Leadership: 0, Strength: 0 };
     const selectedTiles = document.querySelectorAll('.selected');
 
     selectedTiles.forEach(tileElement => {
@@ -165,7 +165,7 @@ function displayResults(totals) {
     results.innerHTML = ''; // Clear previous results
     for (let attribute in totals) {
         const p = document.createElement('p');
-        p.textContent = `${attribute}: ${totals[attribute]}`;
+        p.textContent = `${attribute}: ${totals[attribute]}M`;
         results.appendChild(p);
     }
 }
