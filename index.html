@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
     <title>Interactive Road Construction Map</title>
     <style>
         /* CSS styles for the grid and results display */
@@ -9,6 +10,16 @@
             grid-template-columns: repeat(24, minmax(50px, 1fr)); /* Minimum 50px wide, expandable */
             grid-template-rows: repeat(9, minmax(50px, 1fr)); /* Minimum 50px tall, expandable */
             grid-auto-flow: row;
+        }
+
+        button {
+            margin-bottom: 20px; /* A bit of vertical padding below the button */
+        }
+
+        .city {
+            background-color: #ffd700; /* Gold colour for cities */
+            cursor: not-allowed;
+            pointer-events: none; /* Makes the tile unclickable */
         }
 
         .start-tile {
