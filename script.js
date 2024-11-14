@@ -1,9 +1,20 @@
-let isPlacingCity = false; // Track whether we're in city placement mode
+// Toggle dark mode on/off:
 
+function darkModeToggle() {
+    const toggleButton = document.getElementById('darkModeToggle');
+    toggleButton.onclick = () => {
+        document.body.classList.toggle('dark-mode');
+        // Save the preference locally
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode);
+    };
+}
+
+let isPlacingCity = false; // Track whether we're in city placement mode
 
 // Toggle city placement on/off
 
-function addModeToggle() {
+function cityModeToggle() {
     const toggleButton = document.createElement('button');
     toggleButton.textContent = 'Switch to city placement mode';
     toggleButton.onclick = () => {
@@ -92,7 +103,6 @@ const attributeEmojis = {
 };
 
 function createGrid() {
-    addModeToggle();
     const gridContainer = document.getElementById('grid'); // Get the grid container
 
     for (let tile of tiles) {
@@ -213,5 +223,18 @@ function displayResults(totals, subtotalWithoutStrength, overallTotal) {
     results.appendChild(overallP);
 }
 
-// Create the grid when the page loads:
-createGrid();
+// Initialise all UI elements:
+function initialiseUI() {
+    darkModeToggle();
+    cityModeToggle();
+    createGrid();
+
+    // Restore the previous dark mode preference
+    const savedDarkMode = localStorage.getItem('darkMode');
+    if (savedDarkMode === 'true') {
+        document.body.classList.add('dark-mode');
+    }
+}
+
+// Call initialiseUI when the page loads:
+initialiseUI();
