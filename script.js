@@ -142,6 +142,8 @@ function handleTileClick(tileElement) {
 
 function calculateTotals() {
     let totals = { Charisma: 0, Intelligence: 0, Leadership: 0, Strength: 0 };
+    let subtotalWithoutStrength = 0;
+    let overallTotal = 0;
     const selectedTiles = document.querySelectorAll('.selected');
 
     selectedTiles.forEach(tileElement => {
@@ -156,18 +158,32 @@ function calculateTotals() {
         }
     });
 
-    displayResults(totals);
+    // Calculate the subtotal without Strength
+    subtotalWithoutStrength = totals.Charisma + totals.Intelligence + totals.Leadership;
+
+    // Calculate the overall total
+    overallTotal = subtotalWithoutStrength + totals.Strength;
+
+    displayResults(totals, subtotalWithoutStrength, overallTotal);
 }
 
 // Display results:
 
-function displayResults(totals) {
+function displayResults(totals, subtotalWithoutStrength, overallTotal) {
     results.innerHTML = ''; // Clear previous results
     for (let attribute in totals) {
         const p = document.createElement('p');
-        p.textContent = `${attribute}: ${totals[attribute]}M`;
+        p.textContent = `${attribute}: ${totals[attribute].toFixed(1)}M`;
         results.appendChild(p);
     }
+
+    const subtotalP = document.createElement('p');
+    subtotalP.innerHTML = `<em>Subtotal without Strength</em>: ${subtotalWithoutStrength.toFixed(1)}M`;
+    results.appendChild(subtotalP);
+
+    constant overallP = document.createElement('p');
+    overallP.innerHTML = `<strong>Overall total</strong>: ${overallTotal.toFixed(1)}M`;
+    results.appendChild(subtotalP);
 }
 
 // Create the grid when the page loads:
