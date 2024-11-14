@@ -83,6 +83,14 @@ const tiles = generateTiles(numRows, numCols);
 const map = document.getElementById('map');
 const results = document.getElementById('results');
 
+// Map attributes to emojis
+const attributeEmojis = {
+    'Charisma': '🚩',
+    'Intelligence': '📚',
+    'Leadership': '🤝',
+    'Strength': '⚔️'
+};
+
 function createGrid() {
     addModeToggle();
     const gridContainer = document.getElementById('grid'); // Get the grid container
@@ -91,7 +99,25 @@ function createGrid() {
         const tileElement = document.createElement('div');
         tileElement.className = 'tile';
         tileElement.id = tile.coord;
-        tileElement.textContent = tile.coord;
+
+        // Create and style the coordinate text
+        const coordText = document.createElement('div');
+        coordText.textContent = tile.coord;
+        coordText.style.fontSize = '0.8em'; // Making the coordinate text a bit smaller
+
+        // Create and style the attribute emoji (if it exists)
+        const attrText = document.createElement('div');
+        if (tile.attribute) {
+            attrText.textContent = attributeEmojis[tile.attribute];
+            attrText.style.fontSize = '1.5em';
+        }
+
+        // Add coordinate and attribute emoji to the tile
+        tileElement.appendChild(coordText);
+        tileElement.appendChild(attrText);
+
+        // Update the tile CSS to stack the text vertically
+        tileElement.style.flexDirection = 'column';
 
         // Check if it's the Start tile (namely A5)
         if (tile.coord !== "A5") {
@@ -126,6 +152,7 @@ function handleTileClick(tileElement) {
         tileElement.classList.toggle('city');
         if (tileElement.classList.contains('city')) {
             tileElement.textContent = '🏰'; // Isn't it nice? :-)
+            tileElement.style.fontSize = '1.5em';
         } else {
             tileElement.textContent = tileId; // Restore original coordinate text
         }
