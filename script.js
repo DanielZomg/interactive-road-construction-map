@@ -183,7 +183,7 @@ function displayResults(totals, subtotalWithoutStrength, overallTotal) {
 
     const overallP = document.createElement('p');
     overallP.innerHTML = `<strong>Overall total</strong>: ${overallTotal.toFixed(1)}M`;
-    results.appendChild(subtotalP);
+    results.appendChild(overallP);
 }
 
 // Create the grid when the page loads:
