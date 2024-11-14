@@ -181,7 +181,7 @@ function displayResults(totals, subtotalWithoutStrength, overallTotal) {
     subtotalP.innerHTML = `<em>Subtotal without Strength</em>: ${subtotalWithoutStrength.toFixed(1)}M`;
     results.appendChild(subtotalP);
 
-    constant overallP = document.createElement('p');
+    const overallP = document.createElement('p');
     overallP.innerHTML = `<strong>Overall total</strong>: ${overallTotal.toFixed(1)}M`;
     results.appendChild(subtotalP);
 }
