@@ -1,4 +1,3 @@
-/* styles.css */
 #grid {
     display: grid;
     grid-template-columns: repeat(24, minmax(50px, 1fr)); /* Minimum 50px wide, expandable */
@@ -10,6 +9,7 @@ button {
     margin-bottom: 20px; /* A bit of vertical padding below the button */
 }
 
+/* Light mode styles */
 .city {
     background-color: #ffd700; /* Gold colour for cities */
     cursor: not-allowed;
