@@ -146,8 +146,6 @@ function createGrid() {
 
 // Handle tile selection:
 
-// Handle tile selection:
-
 function handleTileClick(tileElement) {
     const tileId = tileElement.id;
 
