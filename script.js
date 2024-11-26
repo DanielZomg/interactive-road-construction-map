@@ -12,7 +12,7 @@ function darkModeToggle() {
 
 let isPlacingCity = false; // Track whether we're in city placement mode
 
-// Toggle city placement on/off
+// Toggle city placement on/off:
 
 function cityModeToggle() {
     const toggleButton = document.createElement('button');
@@ -152,11 +152,8 @@ function handleTileClick(tileElement) {
     // Don't allow clicking the start tile
     if (tileId === "A5") return;
 
-    // Don't allow clicking if the tile is already a city
-    if (tileElement.classList.contains('city')) return;
-
     if (isPlacingCity) {
-        // Remove any existing selection if present
+        // Remove any existing selection (if present!)
         tileElement.classList.remove('selected');
         // Toggle city status
         tileElement.classList.toggle('city');
