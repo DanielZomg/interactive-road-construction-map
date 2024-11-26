@@ -164,7 +164,16 @@ function handleTileClick(tileElement) {
             tileElement.textContent = '🏰'; // Isn't it nice? :-)
             tileElement.style.fontSize = '1.5em';
         } else {
-            tileElement.textContent = tileId; // Restore original coordinate text
+            // Restore original coordinate text and attribute emoji
+            const tileData = tiles.find(tile => tile.coord === tileId);
+            tileElement.textContent = tileId;
+            tileElement.style.fontSize = '0.8em'; // Reset font size
+            const attrText = document.createElement('div');
+            if (tileData && tileData.attribute) {
+                attrText.textContent = attributeEmojis[tileData.attribute];
+                attrText.style.fontSize = '1.5em';
+            }
+            tileElement.appendChild(attrText);
         }
     } else {
         // Only allow selection if not a city
