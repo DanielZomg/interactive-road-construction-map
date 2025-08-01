@@ -33,6 +33,30 @@ button {
     background-color: lightblue;
 }
 
+#column-controls {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+#column-controls button {
+    padding: 5px 10px;
+    margin: 2px;
+    border: 1px solid #ccc;
+    background-color: #f0f0f0;
+    cursor: pointer;
+    border-radius: 3px;
+    transition: opacity 0.3s ease;
+}
+
+#column-controls button:hover {
+    background-color: #e0e0e0;
+}
+
+.group-hidden {
+    background-color: #ffcccc !important;
+}
+
 /* Dark mode styles */
 body.dark-mode {
     background-color: #333;
@@ -54,4 +78,14 @@ body.dark-mode .city {
 
 body.dark-mode .selected {
     background-color: #4682b4;
+}
+
+body.dark-mode #column-controls button {
+    background-color: #555;
+    border-color: #777;
+    color: #fff;
+}
+
+body.dark-mode #column-controls button:hover {
+    background-color: #666;
 }

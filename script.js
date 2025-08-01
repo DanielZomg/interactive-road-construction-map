@@ -26,18 +26,37 @@ function cityModeToggle() {
     document.body.insertBefore(toggleButton, map);
 }
 
+// Updated column generation to handle new columns, especially beyond Z (currently just AA and AB)
+
+function getColumnLetter(index) {
+    if (index < 26) {
+        return String.fromCharCode(65 + index);
+    } else {
+        // For columns 26+: AA, AB, AC, AD, etc.
+        const firstLetter = 'A';
+        const secondLetter = String.fromCharCode(65 + (index - 26));
+        return firstLetter + secondLetter;
+    }
+}
+
 // Assign values and attributes to each tile:
 
 function generateTiles(rows, cols) {
   const tiles = [];
-  const columnValues = [1, 1.6, 2.3, 3, 6, 9, 12, 15, 20, 25, 30, 35, 46, 57, 69, 82, 112, 140, 175, 207, 260, 320, 380, 440];
+  const columnValues = [1, 1.6, 2.3, 3, 6, 9, 12, 15, 20, 25, 30, 35, 46, 57, 69, 82, 112, 140, 175, 207, 260, 320, 380, 440,
+                        500, 540, 580, 620]; // TODO: check that these 4 new values are correct
 
   // Define the coordinates for each attribute
   const charismaCoords = [ "A8", "B2", "B5", "B9", "C4", "D1", "D7", "D9", "E1", "E2", "E6", "F2",
-                          "F3", "G7", "H3", "H6", "H9", "I2", "I9", "J2", "J4", "J7", "K6", "L1",
-                          "L5", "L9", "M2", "M8", "N6", "N9", "O5", "O8", "P1", "P6", "P9", "Q5",
-                          "Q7", "R1", "R3", "R7", "S1", "S6", "T4", "T5", "U4", "V2", "V4", "V6",
-                          "W4", "W5", "W8", "W9", "X4"];
+                           "F3", "G7", "H3", "H6", "H9", "I2", "I9", "J2", "J4", "J7", "K6", "L1",
+                           "L5", "L9", "M2", "M8", "N6", "N9", "O5", "O8", "P1", "P6", "P9", "Q5",
+                           "Q7", "R1", "R3", "R7", "S1", "S6", "T4", "T5", "U4", "V2", "V4", "V6",
+                           "W4", "W5", "W8", "W9", "X4",
+                           "Y1", "Y2", "Y3", "Y4", "Y5", "Y6", "Y7", "Y8", "Y9",                    // putting them all here for now
+                           "Z1", "Z2", "Z3", "Z4", "Z5", "Z6", "Z7", "Z8", "Z9",
+                           "AA1", "AA2", "AA3", "AA4", "AA5", "AA6", "AA7", "AA8", "AA9",
+                           "AB1", "AB2", "AB3", "AB4", "AB5", "AB6", "AB7", "AB8", "AB9"
+                          ];
   const intelligenceCoords = ["A1", "A4", "A9", "B3", "B6", "C3", "C5", "C8", "D3", "D6", "E3", "E9", 
                               "F5", "F8", "G3", "G4", "G8", "H1", "H7", "I5", "I7", "J5", "J8", "K3", 
                               "K4", "K8", "L2", "L7", "M5", "M6", "N1", "N3", "N7", "O3", "O6", "P4", 
@@ -58,7 +77,7 @@ function generateTiles(rows, cols) {
 
   for (let row = 1; row <= rows; row++) {
       for (let col = 0; col < cols; col++) {
-          const colLetter = String.fromCharCode(65 + col);
+          const colLetter = getColumnLetter(col);
           const coord = colLetter + row;
           const value = columnValues[col];
 
@@ -85,8 +104,90 @@ function generateTiles(rows, cols) {
   return tiles;
 }
 
+// Column group management
+let hiddenGroups = new Set();
+
+function createColumnGroupControls() {
+    const controlsContainer = document.createElement('div');
+    controlsContainer.id = 'column-controls';
+    controlsContainer.style.marginBottom = '10px';
+
+    // Add a label
+    const label = document.createElement('span');
+    label.textContent = 'Toggle column groups: ';
+    label.style.marginRight = '10px';
+    label.style.fontWeight = 'bold';
+    controlsContainer.appendChild(label);
+
+    const numGroups = Math.ceil(numCols / 4);
+
+    for (let group = 0; group < numGroups; group++) {
+        const button = document.createElement('button');
+        const startCol = getColumnLetter(group * 4);
+        const endCol = getColumnLetter(Math.min((group + 1) * 4 - 1, numCols - 1));
+
+        button.textContent = `${startCol}-${endCol}`;
+        button.title = `Toggle visibility of columns ${startCol}-${endCol}`; // A hover 'tooltip' per button
+        button.onclick = () => toggleColumnGroup(group);
+        button.id = `group-${group}`;
+        controlsContainer.appendChild(button);
+    }
+
+    document.body.insertBefore(controlsContainer, document.getElementById('map'));
+}
+
+function toggleColumnGroup(groupIndex) {
+    const button = document.getElementById(`group-${groupIndex}`);
+
+    if (hiddenGroups.has(groupIndex)) {
+        hiddenGroups.delete(groupIndex);
+        button.classList.remove('group-hidden');
+        button.style.opacity = '1';
+    } else {
+        hiddenGroups.add(groupIndex);
+        button.classList.add('group-hidden');
+        button.style.opacity = '0.5';
+    }
+
+    updateGridVisibility();
+}
+
+function updateGridVisibility() {
+    const gridContainer = document.getElementById('grid');
+    let visibleColumnCount = 0;
+
+    // Count visible columns and update tile visibility
+    for (let col = 0; col < numCols; col++) {
+        const groupIndex = Math.floor(col / 4);
+        const isVisible = !hiddenGroups.has(groupIndex);
+
+        if (isVisible) {
+            visibleColumnCount++;
+        }
+
+        // Update all tiles in this column
+        for (let row = 1; row <= numRows; row++) {
+            const colLetter = getColumnLetter(col);
+            const coord = colLetter + row;
+            const tileElement = document.getElementById(coord);
+
+            if (tileElement) {
+                if (isVisible) {
+                    tileElement.style.display = 'flex';
+                } else {
+                    tileElement.style.display = 'none';
+                }
+            }
+        }
+    }
+
+    // Update the grid to have the correct number of visible columns
+    gridContainer.style.gridTemplateColumns = `repeat(${visibleColumnCount}, minmax(50px, 70px))`;
+}
+
+// Grid parameters
 const numRows = 9;      // Number of rows
-const numCols = 24;     // Number of columns (from A to X, hence 24)
+const numCols = 28;     // Number of columns (now A-Z, AA and AB)
 const tiles = generateTiles(numRows, numCols);
 
 // Create the grid dynamically:
@@ -233,7 +334,9 @@ function displayResults(totals, subtotalWithoutStrength, overallTotal) {
 function initialiseUI() {
     darkModeToggle();
     cityModeToggle();
+    createColumnGroupControls();
     createGrid();
+    updateGridVisibility();
 
     // Restore the previous dark mode preference
     const savedDarkMode = localStorage.getItem('darkMode');
